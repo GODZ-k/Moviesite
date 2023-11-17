@@ -1,0 +1,602 @@
+{% extends 'base.html' %}
+
+{% block Start %}
+<!-- {% include 'preloader.html' %} -->
+
+<!-- hot thrills section -->
+<section id="hot-thrills">
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" style="background-color:black;">
+         {% for items in slideshow %}
+            <div class="carousel-item video-slider active" data-bs-interval="10000">
+                <video preload="auto" src="/media/{{items.clip}}" class="video" autoplay loop muted poster="/media/{{items.movie_wallpaper}}">
+                </video>
+                <div class="carousel-caption">
+                    <div class="procont">
+                        <div class="movie-head">
+                            <div class="moviedescription">
+                                <h1 style="color: {{items.name_color}};">{{items.movies.name}}</h1>
+                                <p>{{items.movies.description}}</p>
+                                <div class="time-imdb-rating">
+
+                                    {% if  items.movies.imdb_rating > 6.0 %}
+                                    <span style="color: green;">IMDb {{items.movies.imdb_rating}}</span>
+                                    {% else %}
+                                    <span style="color: red;">IMDb {{items.movies.imdb_rating}}</span>
+                                    {% endif %}
+
+                                    <span>{{items.movies.movie_duration}}</span>
+                                    <span>{{items.movies.movie_year}}</span>
+                                </div>
+
+                                <div class="catogery">
+                                    <ul>
+
+                                        {% for category in items.movies.category.all|slice:"3" %}
+                                        <li>
+                                            <a href="#">{{ category.category }}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </div>
+                                <div class="info-trailler-btn">
+                                    <button class="watch-trailler watch-trailler-1" data-video-id="{{items.movies.movie_trailler}}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                                          </svg>
+                                          Watch Trailler
+                                    </button>
+                                    <button onclick="window.location.href='/detail/{{items.movies.slug}}'" class="more-info"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                    </svg>More info</button>
+                                </div>
+
+
+                            </div>
+                            <div class="ratings">
+                                <button class="clip-audio mute-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-mute" viewBox="0 0 16 16">
+                                        <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM6 5.04 4.312 6.39A.5.5 0 0 1 4 6.5H2v3h2a.5.5 0 0 1 .312.11L6 10.96V5.04zm7.854.606a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0z"/>
+                                      </svg></button>
+                                <span class="maturity-rating">
+                                    <span class="maturity-number">{{items.movies.movie_grade}}</span></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev" fdprocessedid="lgpeob">
+      <span class="visually-hidden">Previous</span>
+    </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next" fdprocessedid="aq0ris">
+      <span class="visually-hidden">Next</span>
+    </button>
+    </div>
+
+
+</section>
+
+<!-- trending section ------------------------------------------------------------------- -->
+
+<section id="trending-movies-slider">
+    <div class="trending-movie-head" data-direction="right" data-speed="slow">
+        <div class="trending-movie-content">
+
+            {% for items in trend  %}
+            <img onclick="window.location.href='/detail/{{items.movies.slug}}'" src="{{items.poster_landscape}}"alt="" />
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!--  main ----------------------------------------------------------------------------  -->
+
+<section id="main-section">
+    <h1>New Release !</h1>
+    <section id="submain_section">
+        <div class="latest-movies">
+
+            {% for items in items  %}
+            <div class="movie-container" title="{{items.movie_title}} ">
+                <div class="sub-movie-container">
+                    <a href="{% url 'detail' items.slug %}">
+                        <img src="{{items.poster_portrait}}" alt="{{items.name}}" />
+                    </a>
+                </div>
+                <div class="sub-container-desc">
+                    <div class="movie-desc-overlay">
+                        <div class="overlay-trailler">
+                            <iframe src="https://www.youtube-nocookie.com/embed/{{items.movie_trailler}}?start=3&end=56&vq=hd1080&autoplay=1&mute=1&loop=1&modestbranding=1&rel=0&iv_load_policy=3&fs=0&color=white&disablekb=1&playlist={{items.movie_trailler}}" width="545" height="300" title="{{items.movie_title}}"
+                                frameborder="0"></iframe>
+                        </div>
+                        <div class="overlay-description">
+                            <div class="overlay-trailler-moreinfo-btn">
+                                <button class="watch-trailler-1" data-video-id="{{items.movie_trailler}}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                                    </svg>
+                                </button>
+                                <a href="{% url 'detail' items.slug %}" style="background: none !important;">
+                                    <button style="
+                                    background-color: transparent;
+                                    border: 1px solid white;
+                                    color: white;
+                                    ">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-lg" viewBox="0 0 16 16">
+                                            <path d="m9.708 6.075-3.024.379-.108.502.595.108c.387.093.464.232.38.619l-.975 4.577c-.255 1.183.14 1.74 1.067 1.74.72 0 1.554-.332 1.933-.789l.116-.549c-.263.232-.65.325-.905.325-.363 0-.494-.255-.402-.704l1.323-6.208Zm.091-2.755a1.32 1.32 0 1 1-2.64 0 1.32 1.32 0 0 1 2.64 0Z"/>
+                                        </svg>
+                                    </button>
+                                </a>
+                                <h5>{{items.name}}</h5>
+                            </div>
+                            <div class="overlay-movie-info-short">
+                                <span>{{items.movie_match}} Match</span> <span>{{items.movie_grade}}</span>
+                                <span>{{items.movie_duration}}</span>
+                            </div>
+                            <div class="overlay-movie-catagory">
+
+                               {% for category in items.category.all|slice:"3" %}
+                                <span><a href="#">{{category.category}} </a></span>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+        <div id="latest_movie_updates">
+
+            <div class="latest_movie_update_container" id="latest_movie_update_container">
+                <h3>Latest Update !</h3>
+                <div class="latest_movie_update_item">
+
+
+
+                    <p>Date: 2023-10-18</p>
+
+
+
+                    <p>We are excited to announce the launch of our new product! This innovative solution will revolutionize the way you [describe the product].</p>
+
+
+                </div>
+                <div class="latest_movie_update_item">
+
+                    <h3>Company News</h3>
+
+                    <p>Date: 2023-10-18</p>
+
+                    <p>We are excited to announce the launch of our new product! This innovative solution will revolutionize the way you [describe the product].</p>
+
+                    </marquee>
+                </div>
+                <!-- Add more initial update items as needed -->
+            </div>
+        </div>
+
+    </section>
+    <!-- pagination ---------------------------------  -->
+    <nav aria-label="..." class="pagination-container">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">2</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</section>
+
+<!--  movie poster ------------------------------------------------------------------  -->
+
+<section class="sub-movie-poster">
+{% for items in recomanded1  %}
+<section style="padding-bottom: 16px;">
+<section class="movie-poster" >
+    <div class="movie-poster-img">
+        <img src="/media/{{items.movie_wallpaper}}" alt="{{items.movies.name}}">
+
+    </div>
+    <div class="movie-poster-banner">
+        <div class="movie-poster-banner-img">
+            <img src="{{items.movies.poster_portrait}}" alt="{{items.movies.name}}" />
+
+        </div>
+        <div class="movie-poster-banner-detail">
+            <p class="movie-poster-banner-detail-img">
+                <img src="https://cdn.freebiesupply.com/images/large/2x/imdb-logo-transparent.png" alt="">
+            </p>
+            <span>{{items.movies.imdb_rating}}</span>
+            <p class="release-date">
+                {{items.movies.movie_year}}
+            </p>
+            <h2>PACAFIC RIM</h2>
+            <p class="movie-poster-banner-detail-para">
+            {{items.movies.description}}
+             </p>
+            <div class="info-trailler-btn movie-poster-banner-detail-btn">
+                <button class="watch-trailler watch-trailler-1" data-video-id="{{items.movies.movie_trailler}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                          </svg>
+                          Watch Trailler
+                    </button>
+                 <button onclick="window.location.href='/detail/{{items.movies.slug}}'" class="more-info"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                    </svg>More info</button>
+            </div>
+        </div>
+    </div>
+
+</section>
+</section>
+{% endfor %}
+</section>
+
+<!-- catagories shortcuts , scifi, Action ,Advanture ,Comedy , Fantasy -----------------------------------------------------------  -->
+
+<section class="catagories-shortcuts">
+    <main class="catagory">
+        <h2 class="thumbTitle">Scifi</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                {% for Scifi in Scifi  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Scifi.slug %}">
+                        <img src="{{Scifi.poster_portrait}}" alt="{{Scifi.name}}" title="{{Scifi.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Action</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Action in Action  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Action.slug %}">
+                        <img src="{{Action.poster_portrait}}" alt="{{Action.name}}" title="{{Action.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Advanture</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Advanture in Advanture  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'Advanture' Advanture.slug %}">
+                        <img src="{{Advanture.poster_portrait}}" alt="{{Advanture.name}}" title="{{Advanture.name}}" />
+                    </a>
+                </div>
+                {% empty %}
+                <p>no data found</p>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Comedy</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Comedy in Comedy  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Comedy.slug %}">
+                        <img src="{{Comedy.poster_portrait}}" alt="{{Comedy.name}}" title="{{Comedy.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Fantasy</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Fantasy in Fantasy  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Fantasy.slug %}">
+                        <img src="{{Fantasy.poster_portrait}}" alt="{{Fantasy.name}}" title="{{Fantasy.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+</section>
+
+<!--  movie poster ------------------------------------------------------------------  -->
+
+<section class="sub-movie-poster">
+{% for items in recomanded2  %}
+<section style="padding-bottom: 16px;">
+<section class="movie-poster" >
+    <div class="movie-poster-img">
+        <img src="/media/{{items.movie_wallpaper}}" alt="{{items.movies.name}}">
+    </div>
+    <div class="movie-poster-banner">
+        <div class="movie-poster-banner-img">
+            <img src="{{items.movies.poster_portrait}}" alt="{{items.movies.name}}" />
+        </div>
+        <div class="movie-poster-banner-detail">
+            <p class="movie-poster-banner-detail-img">
+                <img src="https://cdn.freebiesupply.com/images/large/2x/imdb-logo-transparent.png" alt="">
+            </p>
+            <span>{{items.movies.imdb_rating}}</span>
+            <p class="release-date">
+                    {{items.movies.movie_year}}
+            </p>
+            <h2>PACAFIC RIM</h2>
+            <p class="movie-poster-banner-detail-para">{{items.movies.description}}
+            </p>
+            <div class="info-trailler-btn movie-poster-banner-detail-btn">
+              <button class="watch-trailler watch-trailler-1" data-video-id="{{items.movies.movie_trailler}}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                </svg>
+                  Watch Trailler
+              </button>
+              <button onclick="window.location.href='/detail/{{items.movies.slug}}'" class="more-info"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                </svg>More info
+              </button>
+            </div>
+        </div>
+    </div>
+</section>
+</section>
+{% endfor %}
+</section>
+
+<!-- categories shortcuts , history , horror , thriller , mystery , romance , sports  -------------------------------------------------------------------- -->
+<section class="catagories-shortcuts">
+    <main class="catagory">
+        <h2 class="thumbTitle">Horror</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                {% for Horror in Horror  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Horror.slug %}">
+                        <img src="{{Horror.poster_portrait}}" alt="{{Horror.name}}" title="{{Horror.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Thriller</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Thriller in Thriller  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Thriller.slug %}">
+                        <img src="{{Thriller.poster_portrait}}" alt="{{Thriller.name}}" title="{{Thriller.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Mystery</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Mystery in Mystery  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Mystery.slug %}">
+                        <img src="{{Mystery.poster_portrait}}" alt="{{Mystery.name}}" title="{{Mystery.name}}" />
+                    </a>
+                </div>
+                {% empty %}
+                <p>no data found</p>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Romance</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Romance in Romance  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Romance.slug %}">
+                        <img src="{{Romance.poster_portrait}}" alt="{{Romance.name}}" title="{{Romance.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">Sports</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for Sports in Sports  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' Sports.slug %}">
+                        <img src="{{Sports.poster_portrait}}" alt="{{Sports.name}}" title="{{Sports.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+    <main class="catagory">
+        <h2 class="thumbTitle">History</h2>
+        <span style="text-align: right;"><a href="#" style="text-decoration: none; color:rgba(63, 63, 63, 0.883); font-weight:600; font-size:16px;">More<i class="fa-solid fa-chevron-right" style="padding-left:5px; font-size:16px;"></i></a></span>
+        <div class="thumbTiles swiper">
+            <!-- Additional required wrapper -->
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+
+                {% for History in History  %}
+                <div class="swiper-slide">
+                    <a href="{% url 'detail' History.slug %}">
+                        <img src="{{History.poster_portrait}}" alt="{{History.name}}" title="{{History.name}}" />
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <!-- If we need navigation buttons -->
+            <div class="swiper-button-prev"></div>
+
+            <div class="swiper-button-next"></div>
+        </div>
+    </main>
+</section>
+
+<!-- movie poster -------------------------------------------------------------------------------- -->
+<section class="sub-movie-poster">
+    {% for items in recomanded3  %}
+    <section style="padding-bottom: 16px;">
+    <section class="movie-poster" >
+        <div class="movie-poster-img">
+            <img src="/media/{{items.movie_wallpaper}}" alt="{{items.movies.name}}">
+        </div>
+        <div class="movie-poster-banner">
+            <div class="movie-poster-banner-img">
+                <img src="{{items.movies.poster_portrait}}" alt="{{items.movies.name}}" />
+            </div>
+            <div class="movie-poster-banner-detail">
+                <p class="movie-poster-banner-detail-img">
+                    <img src="https://cdn.freebiesupply.com/images/large/2x/imdb-logo-transparent.png" alt="">
+                </p>
+                <span>{{items.movies.imdb_rating}}</span>
+                <p class="release-date">
+                        {{items.movies.movie_year}}
+                </p>
+                <h2>PACAFIC RIM</h2>
+                <p class="movie-poster-banner-detail-para">{{items.movies.description}}
+                </p>
+                <div class="info-trailler-btn movie-poster-banner-detail-btn">
+                  <button class="watch-trailler watch-trailler-1" data-video-id="{{items.movies.movie_trailler}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                    </svg>
+                      Watch Trailler
+                  </button>
+                  <button onclick="window.location.href='/detail/{{items.movies.slug}}'" class="more-info"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                    </svg>More info
+                  </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    </section>
+    {% endfor %}
+    </section>
+
+{% endblock%}
